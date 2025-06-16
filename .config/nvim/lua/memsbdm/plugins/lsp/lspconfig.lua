@@ -10,9 +10,6 @@ return {
     -- import lspconfig plugin
     local lspconfig = require("lspconfig")
 
-    -- import mason_lspconfig plugin
-    local mason_lspconfig = require("mason-lspconfig")
-
     -- import cmp-nvim-lsp plugin
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
@@ -77,9 +74,9 @@ return {
       signs = {
         text = {
           [vim.diagnostic.severity.ERROR] = "",
-          [vim.diagnostic.severity.WARN]  = "",
-          [vim.diagnostic.severity.HINT]  = "󰠠",
-          [vim.diagnostic.severity.INFO]  = "",
+          [vim.diagnostic.severity.WARN] = "",
+          [vim.diagnostic.severity.HINT] = "󰠠",
+          [vim.diagnostic.severity.INFO] = "",
         },
       },
       update_in_insert = false,
@@ -91,77 +88,22 @@ return {
       },
     })
 
-
-
-    mason_lspconfig.setup_handlers({
-      -- default handler for installed servers
-      function(server_name)
-        lspconfig[server_name].setup({
-          capabilities = capabilities,
-        })
-      end,
-      ["svelte"] = function()
-        -- configure svelte server
-        lspconfig["svelte"].setup({
-          capabilities = capabilities,
-          on_attach = function(client, bufnr)
-            vim.api.nvim_create_autocmd("BufWritePost", {
-              pattern = { "*.js", "*.ts" },
-              callback = function(ctx)
-                -- Here use ctx.match instead of ctx.file
-                client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-              end,
-            })
-          end,
-        })
-      end,
-      ["graphql"] = function()
-        -- configure graphql language server
-        lspconfig["graphql"].setup({
-          capabilities = capabilities,
-          filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
-        })
-      end,
-      ["emmet_ls"] = function()
-        -- configure emmet language server
-        lspconfig["emmet_ls"].setup({
-          capabilities = capabilities,
-          filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-        })
-      end,
-      ["lua_ls"] = function()
-        -- configure lua server (with special settings)
-        lspconfig["lua_ls"].setup({
-          capabilities = capabilities,
-          settings = {
-            Lua = {
-              -- make the language server recognize "vim" global
-              diagnostics = {
-                globals = { "vim" },
-              },
-              completion = {
-                callSnippet = "Replace",
-              },
-            },
+    lspconfig.ts_ls.setup({
+      capabilities = capabilities,
+      filetypes = { "typescript", "javascript", "vue", "javascriptreact", "typescriptreact" },
+      init_options = {
+        plugins = {
+          {
+            name = "@vue/typescript-plugin",
+            location = os.getenv("HOME")
+              .. "/.volta/tools/image/packages/@vue/typescript-plugin/lib/node_modules/@vue/typescript-plugin",
+            languages = { "vue" },
           },
-        })
-      end,
-      ["gopls"] = function()
-        lspconfig["gopls"].setup({
-          capabilities = capabilities,
-          settings = {
-           gopls = {
-              gofumpt = true, -- gofmt + stricter formatting
-              analyses = {
-                unusedparams = true,
-              },  
-              staticcheck = true,
-            },
-          },
-        })
-      end,
+        },
+      },
     })
+
+    require("mason").setup()
+    require("mason-lspconfig").setup()
   end,
 }
-
-
