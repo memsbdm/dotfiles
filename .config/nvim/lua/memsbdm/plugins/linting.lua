@@ -23,6 +23,12 @@ return {
       end,
     })
 
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+      callback = function()
+        vim.fn.jobstart({ "eslint_d", "stop" }, { detach = true })
+      end,
+    })
+
     vim.keymap.set("n", "<leader>l", function()
       lint.try_lint()
     end, { desc = "Trigger linting for current file" })
