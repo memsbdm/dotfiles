@@ -22,6 +22,7 @@ return {
     mason_lspconfig.setup({
       ensure_installed = {
         "ts_ls",
+        "vue_ls",
         "html",
         "cssls",
         "tailwindcss",

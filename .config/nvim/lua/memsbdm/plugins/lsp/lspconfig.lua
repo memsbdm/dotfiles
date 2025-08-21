@@ -88,22 +88,29 @@ return {
       },
     })
 
-    lspconfig.ts_ls.setup({
-      capabilities = capabilities,
-      filetypes = { "typescript", "javascript", "vue", "javascriptreact", "typescriptreact" },
-      init_options = {
-        plugins = {
-          {
-            name = "@vue/typescript-plugin",
-            location = os.getenv("HOME")
-              .. "/.volta/tools/image/packages/@vue/typescript-plugin/lib/node_modules/@vue/typescript-plugin",
-            languages = { "vue" },
-          },
-        },
-      },
-    })
-
     require("mason").setup()
     require("mason-lspconfig").setup()
+
+    -- Vue plugin path for ts_ls
+    local vue_plugin = {
+      name = "@vue/typescript-plugin",
+      location = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+      languages = { "vue" },
+      configNamespace = "typescript",
+    }
+
+    local ts_filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" }
+
+    -- LSP setups
+    lspconfig.ts_ls.setup({
+      capabilities = capabilities,
+      filetypes = ts_filetypes,
+      init_options = { plugins = { vue_plugin } },
+    })
+
+    lspconfig.vue_ls.setup({
+      capabilities = capabilities,
+      filetypes = { "vue" },
+    })
   end,
 }
