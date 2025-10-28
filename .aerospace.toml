@@ -182,7 +182,7 @@ automatically-unhide-macos-hidden-apps = false
 [workspace-to-monitor-force-assignment]
     1 = 'main'
     2 = 'secondary'
-    3 = 'main'
+    3 = 'secondary'
     4 = 'main'
     5 = 'main'
     6 = 'main'
@@ -195,10 +195,13 @@ automatically-unhide-macos-hidden-apps = false
     run = 'layout floating'
 
 [[on-window-detected]]
-    if.app-id = 'com.apple.Music'
-    run = 'move-node-to-workspace 9'
-
-[[on-window-detected]]
     if.app-id = 'com.googlecode.iterm2'
     run = 'move-node-to-workspace 1'
-    
+
+[[on-window-detected]]
+    if.app-id = 'app.zen-browser.zen'
+    run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.Music'
+    run = 'move-node-to-workspace 9'
